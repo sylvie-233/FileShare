@@ -89,7 +89,7 @@ wheels = [
 
 [[package]]
 name = "fileshare"
-version = "0.1.1"
+version = "1.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },

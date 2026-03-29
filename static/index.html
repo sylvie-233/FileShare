@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>局域网文件共享</title>
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <script src="/static/qrcode.js"></script>
     <style>
         * {
             margin: 0;
@@ -280,6 +281,56 @@
             background: #ee5a5a;
         }
 
+        /* 二维码相关样式 */
+        .qrcode-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .qrcode-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            margin-bottom: 10px;
+            display: none;
+            pointer-events: none;
+        }
+
+        .qrcode-popup::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
+        }
+
+        .qrcode-container:hover .qrcode-popup {
+            display: block;
+        }
+
+        .qrcode-img {
+            width: 120px;
+            height: 120px;
+        }
+
+        .btn-share {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-share:hover {
+            background: #45a049;
+        }
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -544,7 +595,12 @@
             <h3>🔗 分享链接</h3>
             <div class="share-link-container">
                 <input type="text" class="share-link" id="shareLink" readonly>
-                <button class="btn-copy" onclick="copyShareLink()">复制链接</button>
+                <div class="qrcode-container">
+                    <button class="btn-copy" onclick="copyShareLink()">复制链接</button>
+                    <div class="qrcode-popup">
+                        <canvas class="qrcode-img" id="shareQrcode"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -591,6 +647,93 @@
         const shareLink = document.getElementById('shareLink');
 
         shareLink.value = window.location.href;
+        
+        // 获取服务器实际URL
+        async function getServerUrl() {
+            try {
+                const response = await fetch('/api/v1/server-info');
+                const data = await response.json();
+                return data.server_url;
+            } catch (error) {
+                console.error('获取服务器URL失败:', error);
+                return window.location.origin;
+            }
+        }
+        
+        // 更新分享链接为服务器实际URL
+        getServerUrl().then(serverUrl => {
+            shareLink.value = serverUrl;
+        });
+        
+        // 生成分享链接的二维码
+        async function generateShareQrcode() {
+            const qrcodeElement = document.getElementById('shareQrcode');
+            if (qrcodeElement) {
+                const serverUrl = await getServerUrl();
+                QRCode.toCanvas(qrcodeElement, serverUrl, {
+                    width: 120,
+                    margin: 1
+                });
+            }
+        }
+
+        // 生成文件分享二维码
+        async function generateFileQrcodes() {
+            const serverUrl = await getServerUrl();
+            const fileQrcodes = document.querySelectorAll('.qrcode-img[data-file]');
+            fileQrcodes.forEach(canvas => {
+                const filename = canvas.getAttribute('data-file');
+                const fileUrl = `${serverUrl}/api/v1/download/${encodeURIComponent(filename)}`;
+                QRCode.toCanvas(canvas, fileUrl, {
+                    width: 120,
+                    margin: 1
+                });
+            });
+        }
+
+        // 复制文件链接
+        async function copyFileLink(filename) {
+            const serverUrl = await getServerUrl();
+            const fileUrl = `${serverUrl}/api/v1/download/${encodeURIComponent(filename)}`;
+            
+            // 尝试使用现代API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(fileUrl);
+                    showNotification('文件链接已复制到剪贴板！', 'success');
+                    return;
+                } catch (err) {
+                    console.log('现代API失败，尝试备用方法');
+                }
+            }
+            
+            // 备用方法：使用textarea
+            try {
+                const textArea = document.createElement('textarea');
+                textArea.value = fileUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                textArea.style.top = '0';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                if (successful) {
+                    showNotification('文件链接已复制到剪贴板！', 'success');
+                } else {
+                    showNotification('复制失败，请手动复制', 'error');
+                }
+            } catch (err) {
+                console.error('复制失败:', err);
+                showNotification('复制失败，请手动复制', 'error');
+            }
+        }
+
+        // 初始生成二维码
+        generateShareQrcode();
 
         dropZone.addEventListener('click', () => fileInput.click());
 
@@ -623,6 +766,9 @@
                 await uploadFile(file);
             }
             loadFiles();
+            
+            // 清空fileInput的value，确保下次选择相同文件时也能触发change事件
+            fileInput.value = '';
         }
 
         async function uploadFile(file) {
@@ -686,10 +832,19 @@
                     </div>
                     <div class="file-actions">
                         <button class="btn btn-download" onclick="downloadFile('${file.name}')">下载</button>
+                        <div class="qrcode-container">
+                            <button class="btn btn-share" onclick="copyFileLink('${file.name}')">分享</button>
+                            <div class="qrcode-popup">
+                                <canvas class="qrcode-img" data-file="${file.name}"></canvas>
+                            </div>
+                        </div>
                         <button class="btn btn-delete" onclick="deleteFile('${file.name}')">删除</button>
                     </div>
                 </div>
             `).join('');
+            
+            // 生成文件二维码
+            setTimeout(generateFileQrcodes, 100);
         }
 
         function getFileIcon(filename) {
@@ -796,18 +951,42 @@
             }
         }
 
-        function copyShareLink() {
-            shareLink.select();
-            shareLink.setSelectionRange(0, 999999);
+        async function copyShareLink() {
+            const serverUrl = await getServerUrl();
+            shareLink.value = serverUrl;
             
+            // 尝试使用现代API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(serverUrl);
+                    showNotification('链接已复制到剪贴板！', 'success');
+                    return;
+                } catch (err) {
+                    console.log('现代API失败，尝试备用方法');
+                }
+            }
+            
+            // 备用方法：使用textarea
             try {
-                navigator.clipboard.writeText(shareLink.value).then(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = serverUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                textArea.style.top = '0';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                if (successful) {
                     showNotification('链接已复制到剪贴板！', 'success');
-                }).catch(() => {
-                    document.execCommand('copy');
-                    showNotification('链接已复制到剪贴板！', 'success');
-                });
+                } else {
+                    showNotification('复制失败，请手动复制', 'error');
+                }
             } catch (err) {
+                console.error('复制失败:', err);
                 showNotification('复制失败，请手动复制', 'error');
             }
         }
