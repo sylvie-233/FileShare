@@ -36,6 +36,12 @@ htmlcov/
 .tox/
 .ruff_cache/
 
+# PyInstaller
+*.spec
+build/
+dist/
+*.exe
+
 .vscode/
 .idea/
 *.swp

@@ -5,6 +5,9 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.files import router as files_router
 from app.core.config import settings
+from app.core.paths import get_base_path
+
+static_dir = get_base_path() / "static"
 
 
 def create_app() -> FastAPI:
@@ -18,13 +21,13 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
     app.include_router(files_router, prefix=settings.API_V1_PREFIX)
 
     @app.get("/", response_class=HTMLResponse)
     async def root():
-        with open("static/index.html", "r", encoding="utf-8") as f:
+        with open(static_dir / "index.html", "r", encoding="utf-8") as f:
             return f.read()
 
     return app

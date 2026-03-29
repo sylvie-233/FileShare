@@ -18,7 +18,11 @@
 - 🔔 **实时通知** - 操作成功/失败的即时反馈
 - ⚡ **高性能** - 基于 FastAPI 和 Uvicorn，快速响应
 
-## 🛠️ 技术栈
+## � 项目截图
+
+![FileShare 项目截图](resources/project.png)
+
+## �🛠️ 技术栈
 
 - **后端框架**: FastAPI 0.115+
 - **ASGI 服务器**: Uvicorn
@@ -100,24 +104,34 @@ FileShare/
 │   │   └── files.py          # 文件相关 API
 │   ├── core/                 # 核心配置
 │   │   ├── __init__.py
-│   │   └── config.py         # 应用配置
+│   │   ├── config.py         # 应用配置
+│   │   └── paths.py          # 路径工具
 │   ├── models/               # 数据模型
 │   │   ├── __init__.py
 │   │   └── schemas.py       # Pydantic 模型
 │   └── services/             # 业务逻辑层
 │       ├── __init__.py
 │       └── file_service.py   # 文件服务
+├── resources/                # 资源文件
+│   └── favicon.ico          # 应用图标
 ├── static/                   # 静态文件
 │   └── index.html           # 前端页面
 ├── tests/                   # 测试目录
-│   └── __init__.py
-├── uploads/                 # 上传文件存储目录
+│   ├── __init__.py
+│   ├── test_api.py          # API 测试
+│   └── test_file_service.py  # 文件服务测试
 ├── .env.example            # 环境变量示例
 ├── .gitignore             # Git 忽略文件
 ├── .python-version        # Python 版本
+├── CHANGELOG.md           # 版本更新记录
+├── CONTRIBUTING.md        # 贡献指南
+├── LICENSE                # 许可证
+├── README.md            # 项目说明
+├── SECURITY.md           # 安全政策
+├── build.ps1            # Windows 打包脚本
 ├── pyproject.toml        # 项目配置
 ├── run.py               # 运行脚本
-└── README.md            # 项目说明
+└── uv.lock               # 依赖锁定文件
 ```
 
 ## 🔌 API 文档
@@ -227,6 +241,23 @@ git commit -m "feat: 添加文件预览功能"
 git commit -m "fix: 修复移动端链接显示问题"
 git commit -m "docs: 更新 README"
 ```
+
+### 打包成 EXE
+
+项目支持打包成单个可执行文件：
+
+```powershell
+# Windows 用户
+.\build.ps1
+```
+
+打包后的文件位于 `dist/FileShare.exe`，可以直接运行。
+
+**注意：**
+- 打包会包含 `static`、`app` 目录
+- `uploads` 目录会在程序启动时自动创建
+- 会自动排除虚拟环境和缓存文件
+- 配置文件应放在 exe 同目录下
 
 ## 📝 开发计划
 
