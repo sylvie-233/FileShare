@@ -34,6 +34,7 @@ uploads/
 .coverage
 htmlcov/
 .tox/
+.ruff_cache/
 
 .vscode/
 .idea/

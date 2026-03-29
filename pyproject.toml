@@ -1,7 +1,7 @@
 [project]
 name = "fileshare"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.1.1"
+description = "A FastAPI-based local network file sharing service with drag-and-drop upload, file management, and mobile responsive design"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -10,3 +10,22 @@ dependencies = [
     "python-multipart>=0.0.12",
     "pydantic-settings>=2.0.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.0",
+]
+
+[tool.ruff]
+line-length = 127
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

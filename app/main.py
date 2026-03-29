@@ -8,11 +8,8 @@ from app.api.files import router as files_router
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(
-        title=settings.PROJECT_NAME,
-        version=settings.VERSION
-    )
-    
+    app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -20,16 +17,16 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     app.mount("/static", StaticFiles(directory="static"), name="static")
-    
+
     app.include_router(files_router, prefix=settings.API_V1_PREFIX)
-    
+
     @app.get("/", response_class=HTMLResponse)
     async def root():
         with open("static/index.html", "r", encoding="utf-8") as f:
             return f.read()
-    
+
     return app
 
 
