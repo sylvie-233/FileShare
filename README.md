@@ -191,6 +191,43 @@ uv run pytest tests/test_file_service.py -v
 uv run pytest tests/ --cov=app --cov-report=html
 ```
 
+### 自动生成 CHANGELOG
+
+项目使用 `git-changelog` 工具自动生成和更新 CHANGELOG：
+
+```bash
+# 安装开发依赖
+uv sync --all-extras
+
+# 更新未发布部分
+uv run git-changelog > CHANGELOG.md
+```
+
+**使用要求：**
+- 需要创建 Git 标签（如 `v0.1.0`）来标记版本
+- 提交信息需要符合 [Conventional Commits](https://www.conventionalcommits.org/) 规范
+
+**提交信息格式：**
+```
+<类型>(<范围>): <描述>
+
+类型说明：
+- feat: 新功能
+- fix: Bug 修复
+- docs: 文档更新
+- style: 代码格式
+- refactor: 重构
+- test: 测试相关
+- chore: 构建/工具
+```
+
+**示例：**
+```bash
+git commit -m "feat: 添加文件预览功能"
+git commit -m "fix: 修复移动端链接显示问题"
+git commit -m "docs: 更新 README"
+```
+
 ## 📝 开发计划
 
 - [ ] 文件夹管理
