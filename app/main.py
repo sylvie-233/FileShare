@@ -5,12 +5,17 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.files import router as files_router
 from app.core.config import settings
+from app.core.logger import get_logger
 from app.core.paths import get_base_path
+
+# 获取日志记录器
+logger = get_logger(__name__)
 
 static_dir = get_base_path() / "static"
 
 
 def create_app() -> FastAPI:
+    logger.info(f"启动 {settings.PROJECT_NAME} v{settings.VERSION}")
     app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
     app.add_middleware(

@@ -1,6 +1,6 @@
 [project]
 name = "fileshare"
-version = "1.1.0"
+version = "1.2.0"
 description = "A FastAPI-based local network file sharing service with drag-and-drop upload, file management, and mobile responsive design"
 readme = "README.md"
 requires-python = ">=3.13"

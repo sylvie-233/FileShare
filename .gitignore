@@ -28,6 +28,7 @@ env.bak/
 venv.bak/
 
 uploads/
+logs/
 *.log
 
 .pytest_cache/
