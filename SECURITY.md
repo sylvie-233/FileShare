@@ -8,7 +8,7 @@
 
 如果你发现了安全漏洞，请不要公开 issue。请通过以下方式私密地报告：
 
-- 发送邮件至：security@example.com
+- 发送邮件至：sylvie233@126.com
 - 使用 GitHub 的私有漏洞报告功能
 
 请包含以下信息：
@@ -80,7 +80,7 @@
 
 ## 联系方式
 
-- 安全邮箱：security@example.com
+- 安全邮箱：sylvie233@126.com
 - GitHub Issues：[https://github.com/sylvie-233/FileShare/security](https://github.com/sylvie-233/FileShare/security)
 
 感谢帮助保持 FileShare 安全！

@@ -24,6 +24,7 @@
 - **ASGI 服务器**: Uvicorn
 - **数据验证**: Pydantic
 - **代码检查**: Ruff
+- **测试框架**: pytest
 - **前端**: 原生 HTML/CSS/JavaScript
 - **包管理**: uv
 
@@ -171,6 +172,24 @@ uv run ruff format app/
 ```
 
 详细的贡献指南请查看 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+### 运行测试
+
+项目使用 pytest 进行测试：
+
+```bash
+# 安装开发依赖
+uv sync --all-extras
+
+# 运行测试
+uv run pytest tests/ -v
+
+# 运行特定测试文件
+uv run pytest tests/test_file_service.py -v
+
+# 运行测试并生成覆盖率报告
+uv run pytest tests/ --cov=app --cov-report=html
+```
 
 ## 📝 开发计划
 
