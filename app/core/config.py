@@ -15,10 +15,7 @@ class Settings(BaseSettings):
     UPLOAD_DIR: Path = Path("uploads")
     MAX_FILE_SIZE: int = 100 * 1024 * 1024
 
-    model_config = ConfigDict(
-        env_file=".env",
-        case_sensitive=True
-    )
+    model_config = ConfigDict(env_file=".env", case_sensitive=True)
 
 
 settings = Settings()
