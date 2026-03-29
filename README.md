@@ -11,6 +11,7 @@
 - 📤 **拖拽上传** - 支持拖拽文件到指定区域上传
 - 📱 **移动端适配** - 响应式设计，完美适配手机和平板
 - 🔗 **分享链接** - 一键复制分享链接，方便局域网内访问
+- 📱 **二维码分享** - 鼠标悬浮显示二维码，手机扫码快速访问
 - 📂 **文件管理** - 上传、下载、删除文件
 - 🗑️ **一键清空** - 快速清空所有上传的文件
 - 🎨 **现代化UI** - 美观的渐变背景和流畅的动画效果
@@ -18,11 +19,11 @@
 - 🔔 **实时通知** - 操作成功/失败的即时反馈
 - ⚡ **高性能** - 基于 FastAPI 和 Uvicorn，快速响应
 
-## � 项目截图
+## 📷 项目截图
 
 ![FileShare 项目截图](resources/project.png)
 
-## �🛠️ 技术栈
+## 🛠️ 技术栈
 
 - **后端框架**: FastAPI 0.115+
 - **ASGI 服务器**: Uvicorn
@@ -30,6 +31,7 @@
 - **代码检查**: Ruff
 - **测试框架**: pytest
 - **前端**: 原生 HTML/CSS/JavaScript
+- **二维码生成**: qrcode.js
 - **包管理**: uv
 
 ## 📦 安装
@@ -89,13 +91,21 @@ python run.py
 ### 分享链接
 
 1. 页面顶部显示当前访问链接
-2. 点击"复制链接"按钮
-3. 将链接分享给局域网内的其他用户
+2. 点击"复制链接"按钮复制链接
+3. 鼠标悬浮在链接或"复制链接"按钮上可显示二维码
+4. 手机扫描二维码或复制链接访问
+5. 文件列表中每个文件都有分享按钮，可单独分享文件链接
 
 ## 📁 项目结构
 
 ```
 FileShare/
+├── .github/                 # GitHub 配置
+│   ├── ISSUE_TEMPLATE/       # Issue 模板
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   └── workflows/           # CI/CD 工作流
+│       └── ci.yml
 ├── app/                      # 应用主包
 │   ├── __init__.py
 │   ├── main.py               # FastAPI 应用入口
@@ -113,9 +123,12 @@ FileShare/
 │       ├── __init__.py
 │       └── file_service.py   # 文件服务
 ├── resources/                # 资源文件
-│   └── favicon.ico          # 应用图标
+│   ├── favicon.ico          # 应用图标
+│   └── project.png         # 项目截图
 ├── static/                   # 静态文件
-│   └── index.html           # 前端页面
+│   ├── favicon.ico          # 应用图标
+│   ├── index.html           # 前端页面
+│   └── qrcode.js           # 二维码生成库
 ├── tests/                   # 测试目录
 │   ├── __init__.py
 │   ├── test_api.py          # API 测试

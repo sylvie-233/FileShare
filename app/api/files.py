@@ -1,10 +1,38 @@
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile, Request
 from fastapi.responses import FileResponse
+import socket
 
+from app.core.config import settings
 from app.models.schemas import ClearAllResponse, DeleteResponse, FileListResponse, UploadResponse
 from app.services.file_service import file_service
 
 router = APIRouter()
+
+
+def get_local_ip():
+    """获取本机的实际IP地址"""
+    try:
+        # 创建一个UDP socket连接到外部地址，获取本地IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+        return local_ip
+    except Exception:
+        # 如果获取失败，返回localhost
+        return "localhost"
+
+
+@router.get("/server-info")
+async def get_server_info(request: Request):
+    """获取服务器信息，包括实际IP地址"""
+    # 获取本机实际IP地址
+    local_ip = get_local_ip()
+    host = f"{local_ip}:{settings.PORT}"
+
+    scheme = request.url.scheme
+    server_url = f"{scheme}://{host}"
+    return {"server_url": server_url}
 
 
 @router.post("/upload", response_model=UploadResponse)
