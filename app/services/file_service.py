@@ -2,7 +2,8 @@ import os
 import shutil
 from pathlib import Path
 from typing import List
-from fastapi import UploadFile, HTTPException
+
+from fastapi import HTTPException, UploadFile
 
 from app.core.config import settings
 from app.models.schemas import FileInfo

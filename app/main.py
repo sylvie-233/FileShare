@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
-from app.core.config import settings
 from app.api.files import router as files_router
+from app.core.config import settings
 
 
 def create_app() -> FastAPI:
