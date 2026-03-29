@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 
 
 class Settings(BaseSettings):
@@ -14,9 +15,10 @@ class Settings(BaseSettings):
     UPLOAD_DIR: Path = Path("uploads")
     MAX_FILE_SIZE: int = 100 * 1024 * 1024
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=True
+    )
 
 
 settings = Settings()
